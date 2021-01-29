@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
-import { Router, Link } from "@reach/router";
-import { Container, Flex, Heading, Button, NavLink } from "theme-ui";
+import { Router } from "@reach/router";
+import { Container, Flex, Heading, Button } from "theme-ui";
 import { IdentityContext } from "../../identity-context";
 import Dash from "../components/dashboard";
 
 let DashLoggedOut = props => {
-  const { user, identity: netlifyIdentity } = useContext(IdentityContext);
-  console.log(user)
+  const { identity: netlifyIdentity } = useContext(IdentityContext);
 
   return (
     <Container>

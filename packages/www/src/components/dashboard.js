@@ -1,10 +1,12 @@
 import React, { useContext, useRef, useReducer } from "react";
-import {Container, Flex, Heading, Button, Input, Label, NavLink, Checkbox} from "theme-ui";
-import { Router, Link } from "@reach/router";
+import {Container, Flex, Button, Input, Label, NavLink, Checkbox} from "theme-ui";
+import { Link } from "@reach/router";
 import { IdentityContext } from "../../identity-context";
 
 const todosReducer = (state, action) => {
   switch (action.type) {
+    default:
+      return state;
     case "addTodo":
       return [{ done: false, value: action.payload }, ...state];
     case "toggleTodoDone":
@@ -60,6 +62,7 @@ export default () => {
         <ul sx={{ listStyleType: "none" }}>
           {todos.map((todo, i) => (
             <Flex
+              key={i}
               as="li"
               onClick={() => {
                 dispatch({
