@@ -2,3 +2,4 @@ node_modules
 public
 user.txt
 .cache
+.env
