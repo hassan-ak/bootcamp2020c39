@@ -22,7 +22,7 @@ const Header = () => {
                         <AssignmentIcon />
                     </IconButton>
                     <Typography variant="h5">
-                        TaskBox
+                        Todo App
                     </Typography>
                 </Toolbar>
             </AppBar>
