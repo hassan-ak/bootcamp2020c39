@@ -1,12 +1,14 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import React from "react";
+import React, { useReducer } from "react";
 import { AppHead } from "./AppHead";
 import * as Yup from "yup";
 // Material Ui Imports
-import { TextField } from "@material-ui/core";
+import { IconButton, TextField } from "@material-ui/core";
 import { Button } from "@material-ui/core";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import "./appLogedIn.css";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 
 // Type Defination
 interface TaskProps {
@@ -18,7 +20,30 @@ const initialValues: TaskProps = {
   task: "",
 };
 
+//Reducer
+const todosReducer = (state, action) => {
+  switch (action.type) {
+    case "addTodo":
+      return [
+        {
+          id: Math.floor(Math.random() * 10000000000),
+          done: false,
+          value: action.payload,
+        },
+        ...state,
+      ];
+    case "toggleTodoDone":
+      const newState = [...state];
+      newState[action.payload] = {
+        done: !state[action.payload].done,
+        value: state[action.payload].value,
+      };
+      return newState;
+  }
+};
+
 export const AppLogedIn = () => {
+  const [todos, dispatch] = useReducer(todosReducer, []);
   return (
     <div>
       <AppHead />
@@ -31,8 +56,9 @@ export const AppLogedIn = () => {
               .max(15, "Must be 15 characters or less")
               .required("Kindly add a Todo"),
           })}
-          onSubmit={(values) => {
-            console.log(values);
+          onSubmit={(values, onSubmitProps) => {
+            dispatch({ type: "addTodo", payload: values.task });
+            onSubmitProps.resetForm();
           }}
         >
           <Form className='formControl1'>
@@ -63,6 +89,40 @@ export const AppLogedIn = () => {
           </Form>
         </Formik>
       </div>
+      {todos.length === 0 ? (
+        <div className='taskScreen taskScreenE'>
+          <p>No Todo's</p>
+        </div>
+      ) : (
+        <div className='taskScreen'>
+          {todos.map((todo, i) => (
+            <div key={i}>
+              <div className={todo.done ? "taskEntryA" : "taskEntry"}>
+                <div
+                  className='archieved'
+                  onClick={() => {
+                    dispatch({
+                      type: "toggleTodoDone",
+                      payload: i,
+                    });
+                  }}
+                >
+                  <IconButton>
+                    {todo.done ? (
+                      <CheckBoxIcon style={{ color: "rgb(40, 218, 64)" }} />
+                    ) : (
+                      <CheckBoxOutlineBlankIcon
+                        style={{ color: "rgb(40, 218, 64)" }}
+                      />
+                    )}
+                  </IconButton>
+                </div>
+                <div className='contnet'>{todo.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
