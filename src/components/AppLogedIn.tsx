@@ -1,5 +1,5 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import React, { useReducer } from "react";
+import React from "react";
 import { AppHead } from "./AppHead";
 import * as Yup from "yup";
 // Material Ui Imports
@@ -9,6 +9,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import "./appLogedIn.css";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 // Type Defination
 interface TaskProps {
@@ -20,29 +21,38 @@ const initialValues: TaskProps = {
   task: "",
 };
 
-//Reducer
-const todosReducer = (state, action) => {
-  switch (action.type) {
-    case "addTodo":
-      return [
-        {
-          done: false,
-          value: action.payload,
-        },
-        ...state,
-      ];
-    case "toggleTodoDone":
-      const newState = [...state];
-      newState[action.payload] = {
-        done: !state[action.payload].done,
-        value: state[action.payload].value,
-      };
-      return newState;
+const ADD_TODO = gql`
+  mutation AddTodo($text: String!) {
+    addTodo(text: $text) {
+      id
+    }
   }
-};
+`;
+
+const UPDATE_TODO_DONE = gql`
+  mutation UpdateTodoDone($id: ID!) {
+    updateTodoDone(id: $id) {
+      text
+      done
+    }
+  }
+`;
+
+const GET_TODOS = gql`
+  query GetTodos {
+    todos {
+      id
+      text
+      done
+    }
+  }
+`;
 
 export const AppLogedIn = () => {
-  const [todos, dispatch] = useReducer(todosReducer, []);
+  const [addTodo] = useMutation(ADD_TODO);
+  const [updateTodoDone] = useMutation(UPDATE_TODO_DONE);
+  const { loading, error, data, refetch } = useQuery(GET_TODOS);
+  console.log(data);
   return (
     <div>
       <AppHead />
@@ -55,9 +65,10 @@ export const AppLogedIn = () => {
               .max(15, "Must be 15 characters or less")
               .required("Kindly add a Todo"),
           })}
-          onSubmit={(values, onSubmitProps) => {
-            dispatch({ type: "addTodo", payload: values.task });
+          onSubmit={async (values, onSubmitProps) => {
+            await addTodo({ variables: { text: values.task } });
             onSubmitProps.resetForm();
+            await refetch();
           }}
         >
           <Form className='formControl1'>
@@ -88,22 +99,20 @@ export const AppLogedIn = () => {
           </Form>
         </Formik>
       </div>
-      {todos.length === 0 ? (
-        <div className='taskScreen taskScreenE'>
-          <p>No Todo's</p>
-        </div>
-      ) : (
+      {error ? <div>{error.message}</div> : null}
+      {loading ? <div>loading...</div> : null}
+      {!loading && !error && (
         <div className='taskScreen'>
-          {todos.map((todo, i) => (
-            <div key={i}>
+          {data.todos.map((todo) => (
+            <div key={todo.id}>
               <div className={todo.done ? "taskEntryA" : "taskEntry"}>
                 <div
                   className='archieved'
-                  onClick={() => {
-                    dispatch({
-                      type: "toggleTodoDone",
-                      payload: i,
-                    });
+                  onClick={async () => {
+                    console.log("updateTodoDone");
+                    await updateTodoDone({ variables: { id: todo.id } });
+                    console.log("refetching");
+                    await refetch();
                   }}
                 >
                   <IconButton>
@@ -116,7 +125,7 @@ export const AppLogedIn = () => {
                     )}
                   </IconButton>
                 </div>
-                <div className='contnet'>{todo.value}</div>
+                <div className='contnet'>{todo.text}</div>
               </div>
             </div>
           ))}
