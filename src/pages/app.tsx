@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { IdentityContext } from "../../identity-context";
-import { AppLogedIn } from "../components/AppLogedIn";
-import { AppLogedOut } from "../components/AppLogedOut";
+import { AppLogedIn } from "../components/dashBoard/AppLogedIn";
+import { AppLogedOut } from "../components/dashBoard/AppLogedOut";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
