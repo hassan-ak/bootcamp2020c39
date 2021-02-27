@@ -6,7 +6,6 @@ import "./appLogedIn.css";
 import { gql, useQuery } from "@apollo/client";
 import { InputForm } from "./loggedIn/InputForm";
 import { TodoList } from "./loggedIn/TodoList";
-import { EmptyList } from "./loggedIn/EmptyList";
 
 const GET_TODOS = gql`
   query GetTodos {
