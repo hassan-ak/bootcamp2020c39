@@ -5,10 +5,30 @@ require("dotenv").config();
 var client = new faunadb.Client({ secret: process.env.FAUNA });
 
 async function run() {
-  const result = await client.query(
-    q.Paginate(q.Match(q.Index("todos_by_user"), "user-test"))
+  // const result = await client.query(
+  //   q.Paginate(q.Match(q.Index("todos_by_user"), "user-test"))
+  // );
+
+  // const results = await client.query(
+  //   q.Update(q.Ref(q.Collection("todos"), id), {
+  //     data: {
+  //       done: true
+  //     }
+  //   })
+  // );
+
+  const results = await client.query(
+    q.Get(q.Ref(q.Collection("todos"), "291723336977744390"))
   );
-  console.log(result);
+  const results1 = await client.query(
+    q.Update(q.Ref(q.Collection("todos"), "291723336977744390"), {
+      data: {
+        done: !results.data.done,
+      },
+    })
+  );
+  console.log(results);
+  console.log(results1);
 }
 
 run();
