@@ -5,26 +5,36 @@ require("dotenv").config();
 var client = new faunadb.Client({ secret: process.env.FAUNA });
 
 async function run() {
-  const results = await client.query(
-    q.Update(q.Ref(q.Collection("todos"), "291723336977744390"), {
-      data: {
-        done: true,
-      },
-    })
+  const result = await client.query(
+    q.Paginate(q.Match(q.Index("todos_by_user"), "user-test"))
   );
-  console.log(results);
+  console.log(result);
 }
 
 run();
 
-//*** Test Two ***
+// ***Test three***
+// async function run() {
+//   const results = await client.query(
+//     q.Update(q.Ref(q.Collection("todos"), "291723336977744390"), {
+//       data: {
+//         done: true,
+//       },
+//     })
+//   );
+//   console.log(results);
+// }
+
+// run();
+
+// *** Test Two ***
 // async function run() {
 //   const results = await client.query(
 //     q.Create(q.Collection("todos"), {
 //       data: {
-//         text: "second",
+//         text: "third",
 //         done: "false",
-//         owner: "user-test",
+//         owner: "user-test2",
 //       },
 //     })
 //   );
