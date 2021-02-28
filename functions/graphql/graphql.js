@@ -12,7 +12,7 @@ const typeDefs = gql`
   }
   type Mutation {
     addTodo(text: String!): Todo
-    updateTodoDone(id: ID!): Todo
+    updateTodoDone(id: ID!, stat: Boolean!): Todo
   }
 `;
 
@@ -36,8 +36,8 @@ const resolvers = {
       todos[id] = { id, text, done: false };
       return todos[id];
     },
-    updateTodoDone: (_, { id }) => {
-      todos[id].done = !todos[id].done;
+    updateTodoDone: (_, { id }, { stat }) => {
+      todos[id].done = !stat;
       return todos[id];
     },
   },
