@@ -3,7 +3,7 @@
 Practice Project
 * Bootcamp 2020 Project 12C: Building a Serverless JAMStack Todo app with Netlify, Gatsby, GraphQL, and FaunaDB
 
-SpaceX app using
+Todo app using
 * Netlify
 * Gatsby
 * GraphQL
