@@ -1,4 +1,4 @@
-# bootcamp2020c23
+# bootcamp2020c39
 
 Practice Project
 * Bootcamp 2020 Project 12C: Building a Serverless JAMStack Todo app with Netlify, Gatsby, GraphQL, and FaunaDB
